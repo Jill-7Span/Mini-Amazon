@@ -1,6 +1,8 @@
 const Redis = require('redis');
 const redisClient = Redis.createClient();
 
+// "redis-commander": "^0.8.0",    in  package.json
+
 exports.getCacheData = async (id) => {
     try {
         await redisClient.connect();
