@@ -5,66 +5,102 @@ const userCache = require("../requests/usersCacheRequest");
 
 //get user
 exports.getUserData = async (condition) => {
-    const data = await model.users.findOne(condition);
-    return common.nullCheckWithDataValues(data);
+    try {
+        const data = await model.users.findOne(condition);
+        return common.nullCheckWithDataValues(data);
+    } catch (error) {
+        return error;
+    };
 };
 
 // get users
 exports.getUsersList = async (condition) => {
-    const data = await model.users.findAll(condition);
-    return common.nullCheckWithOutDataValues(data);
+    try {
+        const data = await model.users.findAll(condition);
+        return common.nullCheckWithOutDataValues(data);
+    } catch (error) {
+        return error;
+    };
 };
 
 // sign up users
 exports.creteUser = async (data) => {
-    const newUserData = await model.users.create(data);
-    delete newUserData.dataValues.password;
-    await userCache.setCacheData(newUserData.dataValues.id, newUserData.dataValues);
-    return common.nullCheckWithDataValues(newUserData);
+    try {
+        const newUserData = await model.users.create(data);
+        delete newUserData.dataValues.password;
+        await userCache.setCacheData(newUserData.dataValues.id, newUserData.dataValues);
+        return common.nullCheckWithDataValues(newUserData);
+    } catch (error) {
+        return error;
+    };
 };
 
 // update users
 exports.updateUser = async (id, update) => {
-    await model.users.update(update, { where: { id } });
-    const data = await model.users.findOne({ where: { id },attributes: { exclude: ['password'] }, });
-    await userCache.setCacheData(data.dataValues.id, data.dataValues);
-    return common.nullCheckWithDataValues(data);
+    try {
+        await model.users.update(update, { where: { id } });
+        const data = await model.users.findOne({ where: { id }, attributes: { exclude: ['password'] }, });
+        await userCache.setCacheData(data.dataValues.id, data.dataValues);
+        return common.nullCheckWithDataValues(data);
+    } catch (error) {
+        return error;
+    };
 };
 
 // delete users
 exports.deleteUser = async (email) => {
-    return await model.users.destroy({ where: { email } });
+    try {
+        return await model.users.destroy({ where: { email } });
+    } catch (error) {
+        return error;
+    };
 };
 
 
 
 // list of permission route
 exports.listOfRoute = async (operationsName, role) => {
-    let condition = {};
-    if (operationsName) {
-        condition = { where: { operationsName } }
+    try {
+        let condition = {};
+        if (operationsName) {
+            condition = { where: { operationsName } }
+        };
+        if (role) {
+            condition = { where: { role } }
+        };
+        const listOfPermission = await model.permission.findAll(condition);
+        return common.nullCheckWithOutDataValues(listOfPermission);
+    } catch (error) {
+        return error;
     };
-    if (role) {
-        condition = { where: { role } }
-    };
-    const listOfPermission = await model.permission.findAll(condition);
-    return common.nullCheckWithOutDataValues(listOfPermission);
 };
 
 //find one route or permission name
 exports.findOnePermission = async (condition) => {
-    const data = await model.permission.findOne(condition);
-    return common.nullCheckWithDataValues(data);
+    try {
+        const data = await model.permission.findOne(condition);
+        return common.nullCheckWithDataValues(data);
+    } catch (error) {
+        return error;
+    };
 };
 
 // add permission route
 exports.addPermission = async ({ operationsName, role, routes }) => {
-    const bodyData = { operationsName, role, routes };
-    const data = await model.permission.create(bodyData);
-    return common.nullCheckWithDataValues(data);
+    try {
+        const bodyData = { operationsName, role, routes };
+        const data = await model.permission.create(bodyData);
+        return common.nullCheckWithDataValues(data);
+    } catch (error) {
+        return error;
+    };
 };
 
 //delete permission route
 exports.deletePermission = async (operationsName, role) => {
-    return await model.users.destroy({ where: { operationsName, role } });
+    try {
+        return await model.users.destroy({ where: { operationsName, role } });
+    } catch (error) {
+        return error;
+    };
 };

@@ -10,12 +10,12 @@ exports.getProduct = async (req, res) => {
         if (productCache != null) {
             return res.json(JSON.parse(productCache));
         } else {
-            const product = await productService.getProduct(id);
+            const product = await productService.getProduct({ where: { id } });
             await userCache.setCacheData(id, product);
             res.status(200).json(product);
         }
     } catch (error) {
-        res.status(403).json({ message: 'Product Not Found!' });
+        res.status(403).json({ message: error + ' Product Not Found!' });
     }
 };
 
@@ -48,32 +48,34 @@ exports.productList = async (req, res) => {
     } catch (error) {
         res.status(403).json({ message: error + ' Server error occurred' });
     }
-}
+};
 
-// add Product
+// add product
 exports.addProduct = async (req, res) => {
     try {
         const data = req.body;
+        data.sellerId = req.user.id;
         let condition = {
             where: {
-                [Op.and]: [
-                    { sellerId: req.user.id },
-                    { productName: data.productName },
-                    { brand: data.brand },
-                    { category: data.category },
-                    { price: data.price },
-                ]
+                [Op.and]:
+                    [
+                        { sellerId: req.user.id },
+                        { productName: data.productName },
+                        { brand: data.brand },
+                        { category: data.category },
+                        { price: data.price }
+                    ]
             }
         };
-        const isProductExist = await productService.findOne(condition);
-        if (!isProductExist) {
+        const isProductExist = await productService.getProduct(condition);
+        if (isProductExist == null) {
             const product = await productService.addProduct(data);
             res.status(403).json(product);
         } else {
             res.status(403).json({ message: ' Product Already Exits' });
         }
     } catch (error) {
-        res.status(403).json({ message: ' Server error occurRed' });
+        res.status(403).json({ message: error + ' Server error occurRed' });
     }
 };
 
@@ -81,7 +83,7 @@ exports.addProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id, description, price, stock } = req.query;
-        const isProductExist = await productService.getProduct(id);
+        const isProductExist = await productService.getProduct({ where: { id } });
         if (isProductExist) {
             const update = {
                 description: description,
@@ -96,7 +98,7 @@ exports.updateProduct = async (req, res) => {
         }
     } catch (error) {
         res.status(403).json({
-            message: `You can't update the product because Product not exist in the product list`
+            message: error + `You can't update the product because Product not exist in the product list`
         });
     }
 };
@@ -105,7 +107,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
     try {
         const { productId } = req.query;
-        const isProductExist = await productService.getProduct(productId);
+        const isProductExist = await productService.getProduct({ where: { id: productId } });
         if (isProductExist) {
             await productService.deleteProduct(productId);
             await cacheData.deleteCacheData(productId);
@@ -114,7 +116,7 @@ exports.deleteProduct = async (req, res) => {
             res.status(403).json({ message: 'Product Not in List or Deleted!' });
         }
     } catch (error) {
-        res.status(403).json({ message: 'Product Not Found!' });
+        res.status(403).json({ message: error + 'Product Not Found!' });
     }
 };
 
@@ -131,7 +133,7 @@ exports.productHistory = async (req, res) => {
                 count: result.count
             });
         }
-    } catch (err) {
-        res.status(403).json({ message: ' Server error occurred' });
+    } catch (error) {
+        res.status(403).json({ message: error + ' Server error occurred' });
     }
 };

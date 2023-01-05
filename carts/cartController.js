@@ -8,7 +8,7 @@ exports.getCartAllProduct = async (req, res) => {
         res.status(200).json(cart);
     } catch (error) {
         res.status(403).json({ message: error + ' Server error occurred' });
-    }
+    };
 };
 
 //  add to cart
@@ -34,7 +34,7 @@ exports.addAndUpdateToCart = async (req, res) => {
         }
     } catch (error) {
         res.status(403).json({ message: error + ' Server error occurred' });
-    }
+    };
 };
 
 //  delete to cart
@@ -46,5 +46,5 @@ exports.deleteFromCart = async (req, res) => {
         res.status(403).json({ message: "Deleted Item was " + req.query.productId });
     } catch (error) {
         res.status(403).json({ message: error + ' Server error occurred' });
-    }
+    };
 };

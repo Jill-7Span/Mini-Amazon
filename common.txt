@@ -113,7 +113,7 @@ JILL
 	-	User (Buyer , Seller , Admin) CURD 
 	-	Change Password API 
 	-	Bcrypt Password hashing in both
-	- 	Joi Validation
+	- 	Joi Validation	
 	-	Sanitization
 	-	Route Authorization (Admin or User  in middleware)
 	-	Pagination in Users data (page , size)
