@@ -12,8 +12,8 @@ const upload = multer({ storage: storage });
 
 const s3Bucket = 'miniamazon' || S3_BUCKET
 const s3Region = "ap-south-1"
-const s3AccessKeyId = 'AKIAUPTF3VH3BDDEVEOW' || S3_ACCESS_KEY_ID
-const s3SecreteAccessKey = '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' || S3_SECRETE_ACCESS_KEY
+const s3AccessKeyId ="place access id here" || S3_ACCESS_KEY_ID
+const s3SecreteAccessKey = "place secrete key here" || S3_SECRETE_ACCESS_KEY
 
 
 
